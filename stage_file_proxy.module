@@ -246,8 +246,13 @@ function stage_file_proxy_get_file_remote_url($relative_path, array $options = a
 
   if (!isset($base_url)) {
     $base_url = FALSE;
+    $server = rtrim(variable_get('stage_file_proxy_origin'), '/');
 
-    if ($server = rtrim(variable_get('stage_file_proxy_origin'), '/')) {
+    // Quit if we are the origin, ignore http(s).
+    if (preg_replace('#^[a-z]*://#', '', $server) == preg_replace('#^[a-z]*://#', '', $GLOBALS['base_url'])) {
+      return FALSE;
+    }
+    if ($server) {
       $base_url = $server . '/';
     }
     if ($dir = trim(variable_get('stage_file_proxy_origin_dir', _stage_file_proxy_file_dir()), '/')) {
