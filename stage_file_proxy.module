@@ -248,7 +248,7 @@ function stage_file_proxy_get_file_remote_url($relative_path, array $options = a
     $base_url = FALSE;
     $server = rtrim(variable_get('stage_file_proxy_origin'), '/');
 
-    // Quit if we are the origin, ignore http(s).
+    // Quit if we are the origin. Ignore http(s) in the origin comparison.
     if (preg_replace('#^[a-z]*://#', '', $server) == preg_replace('#^[a-z]*://#', '', $GLOBALS['base_url'])) {
       return FALSE;
     }
