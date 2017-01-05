@@ -166,6 +166,14 @@ function stage_file_proxy_admin() {
     '#required' => FALSE,
   );
 
+  $form['stage_file_proxy_excluded_extensions'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Excluded Extensions.'),
+    '#default_value' => variable_get('stage_file_proxy_excluded_extensions', ''),
+    '#description' => t("A comma separated list of the extensions that will not be fetched by Stage File Proxy if Hotlinking is disabled. For example: 'mp3,ogg'"),
+    '#required' => FALSE,
+  );
+
   $form['stage_file_proxy_sslversion'] = array(
     '#type' => 'textfield',
     '#title' => t('SSL Version.'),
@@ -296,6 +304,15 @@ function stage_file_proxy_fetch_file($relative_path, array $options = array()) {
     if ($cache = cache_get('stage_file_proxy_fetch_url_failures')) {
       $failures = $cache->data;
     }
+  }
+
+  $excluded_extensions = array_map('trim', explode(',', variable_get('stage_file_proxy_excluded_extensions', '')));
+
+  $path_info = pathinfo($relative_path);
+  $ext = $path_info['extension'];
+
+  if (in_array($ext, $excluded_extensions)) {
+    return FALSE;
   }
 
   $url = stage_file_proxy_get_file_remote_url($relative_path, $options);
