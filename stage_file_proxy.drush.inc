@@ -21,7 +21,8 @@ function stage_file_proxy_drush_command() {
  * Download all managed files from the origin.
  */
 function drush_stage_file_proxy_dl() {
-  if (empty(variable_get('stage_file_proxy_origin'))) {
+  $origin = variable_get('stage_file_proxy_origin');
+  if (empty($origin)) {
     drush_print(dt('Configure stage_file_proxy_origin variable in your settings.php.'), 'error');
     return;
   }
