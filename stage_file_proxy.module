@@ -192,6 +192,15 @@ function stage_file_proxy_admin() {
     '#maxlength' => 2,
     '#required' => FALSE,
   );
+  $form['stage_file_proxy_headers'] = array(
+    '#type' => 'textarea',
+    '#title' => t('HTTP headers.'),
+    '#default_value' => variable_get('stage_file_proxy_headers', ''),
+    '#description' => t('When Stage File Proxy is configured to transfer the
+      remote file to local machine, it will use this headers for HTTP request.
+      Use format like "Referer|http://example.com/'),
+    '#required' => FALSE,
+  );
 
   return system_settings_form($form);
 }
@@ -336,7 +345,8 @@ function stage_file_proxy_fetch_file($relative_path, array $options = array()) {
 
   $destination = str_replace('///', '//', "$destination/") . drupal_basename($relative_path);
 
-  $result = drupal_http_request($url);
+  $headers = _stage_file_proxy_create_headers_array(variable_get('stage_file_proxy_headers', ''));
+  $result = drupal_http_request($url, array('headers' => $headers));
   if ($result->code != 200) {
     watchdog('stage_file_proxy', 'HTTP error @errorcode occurred when trying to fetch @remote.', array('@errorcode' => $result->code, '@remote' => $url), WATCHDOG_ERROR);
     $failures[$url] = TRUE;
@@ -363,6 +373,22 @@ function stage_file_proxy_stage_file_proxy_excluded_paths_alter(&$excluded_paths
   if (module_exists('advagg')) {
     $excluded_paths[] = '/advagg_';
   }
+}
+
+/**
+ * Help function to generate HTTP headers for drupal_http_request.
+ */
+function _stage_file_proxy_create_headers_array($headers_string) {
+  $lines = explode("\n", $headers_string);
+  $headers = array();
+  foreach ($lines as $line) {
+    $header = explode('|', $line);
+    if (count ($header) > 1) {
+      $headers[$header[0]] = $header[1];
+    }
+  }
+
+  return $headers;
 }
 
 /**
