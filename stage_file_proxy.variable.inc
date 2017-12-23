@@ -55,6 +55,13 @@ function stage_file_proxy_variable_info($options) {
     'default' => 3,
     'group' => 'stage_file_proxy',
   );
+  $variables['stage_file_proxy_headers'] = array(
+    'title' => t('HTTP headers'),
+    'description' => t('When Stage File Proxy is configured to transfer the remote file to local machine, it will use this headers for HTTP request. Use format like "Referer|http://example.com/".'),
+    'type' => 'text',
+    'default' => '',
+    'group' => 'stage_file_proxy',
+  );
 
   return $variables;
 }

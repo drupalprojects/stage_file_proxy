@@ -192,13 +192,12 @@ function stage_file_proxy_admin() {
     '#maxlength' => 2,
     '#required' => FALSE,
   );
+
   $form['stage_file_proxy_headers'] = array(
     '#type' => 'textarea',
     '#title' => t('HTTP headers.'),
     '#default_value' => variable_get('stage_file_proxy_headers', ''),
-    '#description' => t('When Stage File Proxy is configured to transfer the
-      remote file to local machine, it will use this headers for HTTP request.
-      Use format like "Referer|http://example.com/'),
+    '#description' => t('When Stage File Proxy is configured to transfer the remote file to local machine, it will use this headers for HTTP request. Use format like "Referer|http://example.com/".'),
     '#required' => FALSE,
   );
 
